@@ -11,12 +11,14 @@ public class Block : MonoBehaviour {
 
     private AudioSource bounceSound;
 
+
+
 	void Awake () {
         Canvas canvas = GetComponentInChildren<Canvas>();
         Debug.Log(canvas);
         countText = canvas.GetComponentInChildren<Text>();
         Debug.Log(countText);
-        //bounceSound = GameObject.Find("BounceSound").GetComponent<AudioSource>();
+        bounceSound = GameObject.Find("BounceSound").GetComponent<AudioSource>();
     }
 
 
@@ -43,12 +45,12 @@ public class Block : MonoBehaviour {
             count--;
             Camera.main.GetComponent<CameraTransitions>().Shake();
             countText.text = count.ToString();
-            //bounceSound.Play();
+            bounceSound.Play();
             if (count == 0)
             {
                 Destroy(gameObject);
                 Camera.main.GetComponent<CameraTransitions>().MediumShake();
-                //GameObject.Find("ExtraBallProgress").GetComponent<Progress>().IncreaseCurrentWidth();
+                GameObject.Find("ExtraBallProgress").GetComponent<Progress>().IncreaseCurrentWidth();
             }
         }
     }

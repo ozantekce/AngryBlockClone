@@ -4,15 +4,65 @@ using UnityEngine;
 
 public class Progress : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    public RectTransform extraBallInner;
+
+    private GameController gameController;
+
+    private float currentWidth, addWidth, totalWidth;
+
+
+    void Awake()
     {
         
+        gameController = GameObject.Find("GameController").GetComponent<GameController>();
+
     }
 
-    // Update is called once per frame
+
+    void Start()
+    {
+
+        extraBallInner.sizeDelta = new Vector2(31, 117);
+        currentWidth = 31;
+        totalWidth = 600;
+
+    }
+
+
     void Update()
     {
         
+        if(currentWidth >= totalWidth)
+        {
+            gameController.ballsCount++;
+            gameController.ballsCountText.text = gameController.ballsCount.ToString();
+            currentWidth = 31;
+        }
+
+        if(currentWidth >= addWidth)
+        {
+            addWidth += 5;
+            extraBallInner.sizeDelta = new Vector2(addWidth, 117);
+
+        }
+        else
+        {
+            addWidth = currentWidth;
+        }
+
     }
+
+
+    public void IncreaseCurrentWidth()
+    {
+
+        int addRandom = Random.RandomRange(80, 120);
+        currentWidth = addRandom + 31 + currentWidth % 576f;
+
+
+    }
+
+
+
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ShootScript : MonoBehaviour
 {
@@ -50,7 +51,7 @@ public class ShootScript : MonoBehaviour
         ballBody = ballPrefab.GetComponent<Rigidbody2D>();
 
 
-        if(gc.shotCount <= 3)
+        if(gc.shotCount <= 3 && !IsMouseOverUI())
         {
             Aim();
             Rotate();
@@ -59,7 +60,10 @@ public class ShootScript : MonoBehaviour
 
     }
 
-
+    private bool IsMouseOverUI()
+    {
+        return EventSystem.current.IsPointerOverGameObject();
+    }
 
 
     void Aim()
@@ -91,7 +95,8 @@ public class ShootScript : MonoBehaviour
 
             aiming = false;
             print("Shoot");
-            StartCoroutine(Shoot());
+            if(!shooting)
+                StartCoroutine(Shoot());
             HideDots();
             if (gc.shotCount == 1)
                 Camera.main.GetComponent<CameraTransitions>().RotateCameraToSide();
@@ -154,12 +159,14 @@ public class ShootScript : MonoBehaviour
     }
 
 
+    private bool shooting;
     IEnumerator Shoot()
     {
-
+        shooting = true;
+        float waitTime = gc.ballsCount * 0.15f;
         for(int i = 0;i < gc.ballsCount; i++)
         {
-            yield return new WaitForSeconds(0.07f);
+            yield return new WaitForSeconds(0.15f);
             GameObject ball = Instantiate(ballPrefab,transform.position,Quaternion.identity);
             ball.name = "Ball";
             ball.transform.SetParent(ballsContainer.transform);
@@ -171,8 +178,10 @@ public class ShootScript : MonoBehaviour
         }
 
 
-        yield return new WaitForSeconds(0.5f);
-        
+        yield return new WaitForSeconds(waitTime);
+
+        shooting = false;
+
         gc.shotCount++;
         gc.ballsCountText.text = gc.ballsCount.ToString();
 
